@@ -53,6 +53,7 @@ export function FormProjectStep({
                   src={project.imageSrc}
                   alt={project.imageAlt}
                   fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   className="object-cover transition duration-700 ease-out hover:scale-[1.035]"
                 />
               </div>

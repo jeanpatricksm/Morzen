@@ -1,17 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import { FormDescriptionStep } from "./_components/form-description-step";
 import { FormProjectStep } from "./_components/form-project-step";
 import { type Project, projects } from "./projects";
 
 export default function NewProjectPage() {
-  const [formLoading, setFormLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedProject, setSelectedProject] = useState<Project>(projects[0]);
-  const router = useRouter();
   const totalSteps = 2;
 
   const handleNext = () => {
@@ -73,33 +69,6 @@ export default function NewProjectPage() {
             <FormDescriptionStep
               selectedProject={selectedProject}
               handleBack={handleBack}
-              isLoading={formLoading}
-              handleSubmit={(data) => {
-                if (!selectedProject) return;
-                setFormLoading(true);
-                fetch("/api/send-mail", {
-                  method: "POST",
-                  body: JSON.stringify({
-                    ...data,
-                    projectTitle: selectedProject.title,
-                  }),
-                })
-                  .then(() => {
-                    toast("Recebemos sua ideia. Em breve a Morzen entra em contato.");
-                    setTimeout(() => {
-                      router.push("/");
-                    }, 3000);
-                  })
-                  .catch((e) => {
-                    console.error(e);
-                    toast(
-                      "Não foi possível enviar sua mensagem. Tente novamente em instantes.",
-                    );
-                  })
-                  .finally(() => {
-                    setFormLoading(false);
-                  });
-              }}
             />
           )}
         </div>

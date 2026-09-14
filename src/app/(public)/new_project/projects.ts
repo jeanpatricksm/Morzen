@@ -10,7 +10,7 @@ export const projects: Project[] = [
   {
     id: "0",
     title: "Uma presença digital",
-    imageSrc: "/landing_page_example.png",
+    imageSrc: "/landing_page_example.webp",
     imageAlt: "Exemplo de Landing Page",
     description: [
       "Uma primeira impressão com personalidade",
@@ -32,7 +32,7 @@ export const projects: Project[] = [
   {
     id: "2",
     title: "Algo próprio",
-    imageSrc: "/other_projects_example.png",
+    imageSrc: "/other_projects_example.webp",
     imageAlt: "Exemplo de uma solução digital personalizada",
     description: [
       "Uma ideia desenhada ao seu redor",

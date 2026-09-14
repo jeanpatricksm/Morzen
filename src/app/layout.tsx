@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import type React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { defaultDescription, siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -10,51 +11,23 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Morzen - Construindo um legado, com você",
-  description:
-    "A Morzen constrói produtos digitais lado a lado com seus clientes e compartilha cada etapa do caminho com transparência.",
-  keywords: [
-    "Desenvolvimento de software",
-    "Aplicativos web",
-    "Soluções digitais",
-    "Agência de tecnologia",
-    "Desenvolvimento personalizado",
-    "Morzen",
-  ],
-  authors: [{ name: "Morzen", url: "https://morzen.com.br" }],
-  creator: "Morzen",
-  publisher: "Morzen",
-  metadataBase: new URL("https://morzen.com.br"),
-  alternates: {
-    canonical: "https://morzen.com.br",
+  metadataBase: new URL(siteUrl),
+  applicationName: siteName,
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
   },
-  openGraph: {
-    type: "website",
-    locale: "pt_BR",
-    url: "https://morzen.com.br",
-    title: "Morzen - Construindo um legado, com você",
-    description:
-      "A Morzen constrói produtos digitais lado a lado com seus clientes e compartilha cada etapa do caminho com transparência.",
-    siteName: "Morzen",
-    images: [
-      {
-        url: "https://morzen.com.br/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Logo da Morzen com fundo escuro",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Morzen - Construindo um legado, com você",
-    description: "A Morzen constrói produtos digitais lado a lado com seus clientes e compartilha cada etapa do caminho com transparência.",
-    images: ["https://morzen.com.br/og.png"],
-    site: "@morzen.zenmor",
-    creator: "@morzen.zenmor",
-  },
+  description: defaultDescription,
+  authors: [{ name: siteName, url: siteUrl }],
+  creator: siteName,
+  publisher: siteName,
+  category: "technology",
   icons: {
-    icon: "/morzen_mark.png",
+    icon: [
+      { url: "/favicon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 };
 

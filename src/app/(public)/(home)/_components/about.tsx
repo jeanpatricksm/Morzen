@@ -55,7 +55,7 @@ export function About() {
               className="group relative block w-full overflow-hidden rounded-lg shadow-sm border transform transition-transform duration-300 hover:scale-105"
             >
               <Image
-                src="/diego_about_pic.jpg"
+                src="/diego_about_pic.webp"
                 alt="Diego, membro da equipe Morzen"
                 width={800}
                 height={800}
@@ -74,7 +74,7 @@ export function About() {
               className="group relative block w-full overflow-hidden rounded-lg shadow-sm border transform transition-transform duration-300 hover:scale-105"
             >
               <Image
-                src="/jean_about_pic.jpg"
+                src="/jean_about_pic.webp"
                 alt="Jean, membro da equipe Morzen"
                 width={800}
                 height={800}
