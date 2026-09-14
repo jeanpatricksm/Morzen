@@ -25,7 +25,7 @@ export default function MorzenLanding() {
         <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-7rem)] w-full max-w-7xl flex-col items-center justify-center pb-20">
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             <h1 className="morzen-hero-title text-[4.35rem] font-medium leading-none tracking-[-0.03em] text-black sm:text-[5.7rem] md:text-[6.8rem]">Morzen</h1>
-            <p className="morzen-hero-copy mt-8 max-w-3xl text-lg font-medium leading-8 text-black sm:text-xl">Construindo um legado, com você.</p>
+            <p className="morzen-hero-copy mt-8 max-w-3xl text-lg font-medium leading-8 text-black sm:text-xl">Construindo sua ideia em software, com você.</p>
             <div className="morzen-hero-actions mt-9 flex flex-col items-center gap-3 sm:flex-row">
               <Link href="#visao" className="morzen-liquid-button morzen-liquid-button-dark inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold text-black transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30">Acompanhar nossa construção <ArrowUpRight className="size-4" aria-hidden="true" /></Link>
               <Link href="/new_project" className="morzen-liquid-button morzen-liquid-button-light inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-semibold text-black transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30">Conversar sobre um projeto</Link>

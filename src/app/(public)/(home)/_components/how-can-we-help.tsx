@@ -21,7 +21,7 @@ const services = [
   {
     title: "Dashboards e Sistemas",
     description:
-      "Painéis administrativos, ERPs, CRMs e sistemas sob medida para impulsionar o seu negócio.",
+      "Painéis administrativos, ERPs, CRMs e sistemas pensados para a rotina do seu negócio.",
     icon: MonitorSmartphone,
   },
   {
@@ -44,7 +44,7 @@ export function HowCanWeHelp() {
         </Badge>
 
         <h2 className="text-4xl font-bold mb-4 text-foreground">
-          Soluções sob medida para o seu projeto
+          Construindo sua ideia em software, com você.
         </h2>
 
         <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
