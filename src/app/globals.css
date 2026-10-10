@@ -257,8 +257,11 @@ button:hover {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  backdrop-filter: blur(24px) saturate(1.18) contrast(1.02);
-  -webkit-backdrop-filter: blur(24px) saturate(1.18) contrast(1.02);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  /* Refracao real no Chromium; Safari/Firefox ignoram esta linha e usam o blur acima */
+  backdrop-filter: url(#morzen-liquid-glass) blur(1px) saturate(180%);
+  -webkit-backdrop-filter: url(#morzen-liquid-glass) blur(1px) saturate(180%);
 }
 
 .morzen-liquid-button > *,
@@ -268,6 +271,7 @@ button:hover {
   z-index: 1;
 }
 
+/* Tint quase invisivel: o vidro deve parecer transparente, nao branco */
 .morzen-liquid-button::before,
 .morzen-liquid-panel::before,
 .morzen-liquid-photo-card::before {
@@ -277,76 +281,68 @@ button:hover {
   z-index: 0;
   border-radius: inherit;
   pointer-events: none;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06) 46%, transparent 72%),
-    radial-gradient(ellipse at 22% 0%, rgba(255, 255, 255, 0.2), transparent 36%),
-    radial-gradient(circle at 88% 92%, rgba(105, 92, 255, 0.1), transparent 42%);
-  opacity: 0.58;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
 }
 
+/* Borda especular de 1px: a luz so aparece na borda, como no iOS */
 .morzen-liquid-button::after,
 .morzen-liquid-panel::after,
 .morzen-liquid-photo-card::after {
   content: "";
   position: absolute;
-  inset: 1px;
-  z-index: 0;
+  inset: 0;
+  z-index: 2;
   border-radius: inherit;
+  padding: 1px;
   pointer-events: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-    inset 0 -10px 24px rgba(255, 255, 255, 0.04);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.14) 26%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 0.12) 74%,
+    rgba(255, 255, 255, 0.55) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
 }
 
 .morzen-liquid-button {
   box-shadow:
-    0 14px 34px rgba(28, 27, 62, 0.14),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+    0 10px 28px rgba(28, 27, 62, 0.12),
+    0 1px 2px rgba(28, 27, 62, 0.06);
 }
 
 .morzen-liquid-button-dark {
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 14px 34px rgba(76, 73, 140, 0.12),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.26);
-}
-
-.morzen-liquid-button-dark::before {
-  opacity: 0.64;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .morzen-liquid-button-light {
-  background: rgba(255, 255, 255, 0.22);
-  box-shadow:
-    0 14px 34px rgba(76, 73, 140, 0.12),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .morzen-liquid-button-selected {
-  background: rgba(255, 255, 255, 0.38);
-  box-shadow:
-    0 14px 34px rgba(76, 73, 140, 0.13),
-    inset 0 0 0 1px rgba(93, 69, 232, 0.3);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .morzen-liquid-button-clear {
   background: rgba(255, 255, 255, 0.1);
   box-shadow:
-    0 16px 38px rgba(0, 0, 0, 0.18),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    0 12px 30px rgba(0, 0, 0, 0.16),
+    0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .morzen-liquid-panel,
 .morzen-liquid-photo-card {
-  background: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.28);
   box-shadow:
-    0 22px 64px rgba(25, 31, 75, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+    0 20px 50px rgba(25, 31, 75, 0.1),
+    0 1px 2px rgba(25, 31, 75, 0.05);
 }
 
 .morzen-liquid-photo-card {
-  background: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.36);
 }
 
 .morzen-project-page {

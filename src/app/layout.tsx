@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import type React from "react";
+import { LiquidGlassFilter } from "@/components/liquid-glass-filter";
 import { ThemeProvider } from "@/components/theme-provider";
 import { defaultDescription, siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={dmSans.className}>
+        <LiquidGlassFilter />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
