@@ -257,11 +257,11 @@ button:hover {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.08);
   /* Refracao real no Chromium; Safari/Firefox ignoram esta linha e usam o blur acima */
-  backdrop-filter: url(#morzen-liquid-glass) blur(1px) saturate(180%);
-  -webkit-backdrop-filter: url(#morzen-liquid-glass) blur(1px) saturate(180%);
+  backdrop-filter: url(#morzen-liquid-glass) blur(1px) saturate(180%) brightness(1.08);
+  -webkit-backdrop-filter: url(#morzen-liquid-glass) blur(1px) saturate(180%) brightness(1.08);
 }
 
 .morzen-liquid-button > *,
@@ -281,7 +281,7 @@ button:hover {
   z-index: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.04) 55%, rgba(255, 255, 255, 0.1) 100%);
 }
 
 /* Borda especular de 1px: a luz so aparece na borda, como no iOS */
@@ -315,15 +315,15 @@ button:hover {
 }
 
 .morzen-liquid-button-dark {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .morzen-liquid-button-light {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.38);
 }
 
 .morzen-liquid-button-selected {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.46);
 }
 
 .morzen-liquid-button-clear {
