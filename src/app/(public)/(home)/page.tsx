@@ -13,13 +13,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  areaServed,
   defaultDescription,
   siteName,
   siteUrl,
   socialProfiles,
 } from "@/lib/seo";
 
-const pageTitle = "Construindo software em público";
+const pageTitle = "Empresa de desenvolvimento de software e sistemas";
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -58,6 +59,7 @@ const organizationSchema = {
   logo: `${siteUrl}/favicon-192.png`,
   description: defaultDescription,
   email: "contato@morzen.com.br",
+  areaServed,
   sameAs: [
     socialProfiles.instagram,
     socialProfiles.linkedin,
@@ -115,11 +117,12 @@ export default function MorzenLanding() {
               Morzen
             </p>
             <h1 className="morzen-hero-copy mt-8 max-w-3xl text-xl font-medium leading-8 text-black sm:text-2xl">
-              Construindo sua ideia em software, com você.
+              Sistemas, sites e aplicativos para empresas, construídos com você.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-black/70 sm:text-lg">
               Desenvolvemos sites, sistemas e produtos digitais com contexto e
-              transparência em cada etapa.
+              transparência em cada etapa. Atendemos todo o Brasil e,
+              presencialmente, o Vale do Paraíba.
             </p>
             <div className="morzen-hero-actions mt-9 flex flex-col items-center gap-3 sm:flex-row">
               <Link
