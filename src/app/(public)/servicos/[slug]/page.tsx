@@ -1,9 +1,9 @@
-import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check, Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getService, services } from "@/lib/services";
-import { siteName, siteUrl } from "@/lib/seo";
+import { areaServed, siteName, siteUrl } from "@/lib/seo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -32,20 +32,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${service.title} | ${siteName}`,
       description: service.description,
       siteName,
-      images: [
-        {
-          url: "/og.png",
-          width: 1200,
-          height: 630,
-          alt: "Morzen — software sob medida, construído com transparência",
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${service.title} | ${siteName}`,
       description: service.description,
-      images: ["/og.png"],
     },
   };
 }
@@ -72,7 +63,16 @@ export default async function ServicePage({ params }: Props) {
         name: siteName,
         url: siteUrl,
       },
-      areaServed: "BR",
+      areaServed,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: service.faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
     },
     {
       "@context": "https://schema.org",
@@ -170,6 +170,36 @@ export default async function ServicePage({ params }: Props) {
                 </li>
               ))}
             </ol>
+          </div>
+        </section>
+
+        <section className="border-b border-[#17151b]/10 px-6 py-24 sm:px-10 sm:py-32 lg:px-16">
+          <div className="mx-auto grid max-w-[1440px] gap-14 lg:grid-cols-[0.72fr_1.28fr] lg:gap-24">
+            <div>
+              <p className="morzen-eyebrow">Perguntas frequentes</p>
+              <h2 className="mt-6 max-w-md text-4xl font-medium leading-[1.02] tracking-[-0.04em] sm:text-5xl">
+                O que costumam nos perguntar.
+              </h2>
+            </div>
+            <div className="border-t border-[#17151b]/12">
+              {service.faq.map((item) => (
+                <details
+                  key={item.question}
+                  className="group border-b border-[#17151b]/12 py-6"
+                >
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-xl font-medium leading-8 tracking-[-0.02em] [&::-webkit-details-marker]:hidden">
+                    {item.question}
+                    <Plus
+                      className="mt-1.5 size-5 shrink-0 text-[#6445d8] transition group-open:rotate-45"
+                      aria-hidden="true"
+                    />
+                  </summary>
+                  <p className="mt-4 max-w-2xl leading-7 text-[#17151b]/65">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
 

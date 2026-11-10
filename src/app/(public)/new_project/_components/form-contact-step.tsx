@@ -6,21 +6,32 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import type { Project } from "../projects";
+import {
+  type Answers,
+  budgets,
+  contactChannels,
+  labelOf,
+  priorityOf,
+  sources,
+  stages,
+  teamSizes,
+  timelines,
+} from "../qualify";
+import { ChoiceGroup } from "./choice-group";
 
 type ProjectFormFields = {
   name: string;
   email: string;
-  phone?: string;
-  description: string;
-  projectTitle: string;
+  phone: string;
   honey?: string;
 };
 
-interface FormDescriptionProps {
+interface FormContactProps {
   selectedProject?: Project;
+  answers: Answers;
   handleBack: VoidFunction;
+  onSent: VoidFunction;
 }
 
 function formatPhone(value: string) {
@@ -40,35 +51,33 @@ function formatPhone(value: string) {
   return `(${areaCode}) ${phoneNumber.slice(0, 5)}-${phoneNumber.slice(5)}`;
 }
 
-export function FormDescriptionStep({
+export function FormContactStep({
   selectedProject,
+  answers,
   handleBack,
-}: FormDescriptionProps) {
+  onSent,
+}: FormContactProps) {
   const router = useRouter();
   const [formState, submitToFormspree] =
     useForm<ProjectFormFields>("mbgjrgwq");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [channel, setChannel] = useState("whatsapp");
   const [honeyPot, setHoneyPot] = useState("");
 
   useEffect(() => {
     if (!formState.succeeded) return;
 
     toast("Recebemos sua ideia. Em breve a Morzen entra em contato.");
-    setName("");
-    setEmail("");
-    setPhone("");
-    setDescription("");
-    setHoneyPot("");
+    onSent();
 
     const redirectTimeout = window.setTimeout(() => {
       router.push("/");
     }, 3000);
 
     return () => window.clearTimeout(redirectTimeout);
-  }, [formState.succeeded, router]);
+  }, [formState.succeeded, router, onSent]);
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     if (honeyPot) {
@@ -80,20 +89,20 @@ export function FormDescriptionStep({
   };
 
   return (
-    <div className="morzen-project-form mx-auto flex w-full max-w-2xl flex-col items-center gap-7 p-6 sm:p-10">
+    <div className="morzen-project-form flex w-full max-w-3xl flex-col items-start gap-6">
       <div className="w-full">
-        <p className="morzen-eyebrow">Etapa 02</p>
-        <h2 className="mt-4 text-3xl font-medium tracking-[-0.04em] sm:text-4xl">
-          Vamos entender o seu desafio.
+        <p className="morzen-eyebrow">Etapa 05</p>
+        <h2 className="mt-3 text-3xl font-medium tracking-[-0.04em] sm:text-4xl">
+          Para onde a gente responde?
         </h2>
-        <p className="mt-3 leading-7 text-black/58">
-          Compartilhe o contexto, os objetivos e o que precisa melhorar. A
-          gente responde para conversar sobre os próximos passos.
+        <p className="mt-2 leading-7 text-black/58">
+          Último passo. Com isso, já chegamos na conversa sabendo do seu
+          contexto.
         </p>
       </div>
 
       {selectedProject && (
-        <div className="morzen-project-selected w-full px-4 py-3 text-sm text-black/58">
+        <div className="morzen-project-selected w-full border-t border-[#6445d8]/30 py-3 text-sm text-black/58">
           Você quer começar por:{" "}
           <span className="font-semibold text-black">
             {selectedProject.title}
@@ -102,15 +111,26 @@ export function FormDescriptionStep({
       )}
 
       <form className="w-full space-y-5" onSubmit={handleFormSubmit}>
-        <input
-          type="hidden"
-          name="projectTitle"
-          value={selectedProject?.title ?? "Não informado"}
-        />
+        {Object.entries({
+          projeto: selectedProject?.title ?? "Não informado",
+          momento: labelOf(stages, answers.stage),
+          linkAtual: answers.currentUrl || "Não informado",
+          prazo: labelOf(timelines, answers.timeline),
+          investimento: labelOf(budgets, answers.budget),
+          empresa: answers.company || "Não informado",
+          equipe: labelOf(teamSizes, answers.teamSize),
+          desafio: answers.description,
+          origem: labelOf(sources, answers.source),
+          canalPreferido: labelOf(contactChannels, channel),
+          prioridade: priorityOf(answers),
+          _subject: `[${priorityOf(answers)}] Novo projeto: ${selectedProject?.title ?? "Não informado"}`,
+        }).map(([key, value]) => (
+          <input key={key} type="hidden" name={key} value={value} />
+        ))}
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <Label className="text-sm font-medium text-black/72" htmlFor="nome">
+            <Label className="morzen-field-label" htmlFor="nome">
               Nome
             </Label>
             <Input
@@ -132,7 +152,7 @@ export function FormDescriptionStep({
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label className="text-sm font-medium text-black/72" htmlFor="email">
+            <Label className="morzen-field-label" htmlFor="email">
               Email
             </Label>
             <Input
@@ -155,8 +175,8 @@ export function FormDescriptionStep({
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <Label className="text-sm font-medium text-black/72" htmlFor="telefone">
-            Telefone <span className="text-black/42">opcional</span>
+          <Label className="morzen-field-label" htmlFor="telefone">
+            WhatsApp
           </Label>
           <Input
             id="telefone"
@@ -171,6 +191,7 @@ export function FormDescriptionStep({
             pattern="\\([0-9]{2}\\) [0-9]{4,5}-[0-9]{4}"
             title="Use o formato (xx) xxxxx-xxxx"
             autoComplete="tel"
+            required
           />
           <ValidationError
             field="phone"
@@ -178,36 +199,14 @@ export function FormDescriptionStep({
             className="text-sm leading-6 text-red-600"
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <Label className="text-sm font-medium text-black/72" htmlFor="desc">
-            Qual desafio você quer resolver?
-          </Label>
-          <Textarea
-            id="desc"
-            name="description"
-            rows={8}
-            cols={4}
-            className="morzen-form-control min-h-56 resize-y"
-            placeholder="Conte o que está acontecendo e o que você gostaria de melhorar"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            minLength={4}
-            maxLength={1024}
-            aria-invalid={Boolean(
-              formState.errors?.getFieldErrors("description").length,
-            )}
-            required
-          />
-          <ValidationError
-            field="description"
-            errors={formState.errors}
-            className="text-sm leading-6 text-red-600"
-          />
-          <p className="text-sm leading-6 text-black/48">
-            Quanto mais contexto você compartilhar, melhor conseguimos pensar
-            junto com você.
-          </p>
-        </div>
+        <ChoiceGroup
+          label="Como prefere ser contatado?"
+          choices={contactChannels}
+          value={channel}
+          onChange={setChannel}
+          columns="grid-cols-3"
+          compact
+        />
         <div className="hidden">
           <label htmlFor="honey">Deixe este campo em branco</label>
           <input
@@ -247,6 +246,9 @@ export function FormDescriptionStep({
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </Button>
         </div>
+        <p className="text-center text-sm leading-6 text-black/48">
+          Respondemos em até 1 dia útil. Sem spam.
+        </p>
       </form>
     </div>
   );

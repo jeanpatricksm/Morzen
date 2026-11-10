@@ -40,3 +40,11 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+export const unknownProject: Project = {
+  id: "unknown",
+  title: "Ainda não sei",
+  imageSrc: "",
+  imageAlt: "",
+  description: [],
+};
