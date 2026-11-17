@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morzen — Mock 01 Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f7f7f4;      /* off-white Morzen */
+    --paper-2: #f0efff;    /* lavanda clara */
+    --ink: #17151b;        /* tinta Morzen */
+    --violet: #6445d8;     /* roxo Morzen */
+    --violet-deep: #201835;
+    --lilac: #b9a8ff;
+    --line: #6445d8;
+    --muted: #6b6578;
+    --col: min(1200px, calc(100vw - 32px));
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: "DM Sans", sans-serif; font-size: 15px; line-height: 1.5; overflow-x: hidden; }
+  a { color: inherit; }
+  .serif { font-family: "Instrument Serif", serif; font-weight: 400; }
+  .caps { text-transform: uppercase; letter-spacing: .02em; }
+
+  /* ---------- grid frame ---------- */
+  .frame { width: var(--col); margin: 0 auto; position: relative; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .row { position: relative; border-top: 1px solid var(--line); }
+  .row:last-child { border-bottom: 1px solid var(--line); }
+  .node { position: absolute; width: 7px; height: 7px; background: var(--violet); transform: translate(-50%, -50%); z-index: 2; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; }
+  .split > * + * { border-left: 1px solid var(--line); }
+
+  .label { display: flex; align-items: center; gap: 28px; padding: 28px 0 0; color: var(--violet); font-size: 13px; }
+  .ticks { display: grid; gap: 7px; width: 24px; }
+  .ticks i { display: block; height: 1px; background: var(--line); }
+  .tag { display: inline-block; background: var(--violet); color: #fff; font-size: 11px; padding: 5px 10px; letter-spacing: .04em; }
+
+  /* ---------- nav ---------- */
+  nav { width: var(--col); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+  nav .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 22px; color: var(--violet); }
+  nav .brand img { width: 26px; height: auto; }
+  nav ul { display: flex; gap: 32px; list-style: none; font-size: 13px; }
+  nav ul a { text-decoration: none; color: var(--violet); }
+  nav ul a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--violet); color: var(--violet); padding: 10px 20px; border-radius: 999px; font-size: 13px; text-decoration: none; transition: background .2s, color .2s; }
+  .btn:hover, .btn.solid { background: var(--violet); color: #fff; }
+  .btn.solid:hover { background: var(--violet-deep); border-color: var(--violet-deep); }
+
+  /* ---------- hero ---------- */
+  .hero { min-height: 82vh; display: flex; flex-direction: column; justify-content: space-between; padding: 0 40px 48px; }
+  .hero h1 { font-size: clamp(56px, 10vw, 148px); line-height: .88; color: var(--violet); letter-spacing: -.01em; margin-top: 12vh; }
+  .hero h1 em { font-style: italic; color: var(--ink); }
+  .hero-foot { display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; }
+  .hero-foot p { max-width: 420px; color: var(--muted); font-size: 16px; }
+  .hero-foot .actions { display: flex; gap: 12px; }
+
+  /* ---------- case study ---------- */
+  .case-text { padding: 0 40px 48px; display: flex; flex-direction: column; min-height: 560px; }
+  .case-text .tag { align-self: flex-end; margin-top: 32px; }
+  .case-text .bottom { margin-top: auto; display: flex; justify-content: space-between; align-items: end; gap: 24px; }
+  .case-text h2 { font-size: 34px; line-height: 1; color: var(--violet); text-align: right; }
+  .case-text p { color: var(--muted); text-align: right; max-width: 300px; margin-left: auto; margin-top: 10px; }
+  .link { color: var(--violet); font-size: 13px; text-decoration: underline; text-underline-offset: 5px; }
+  .case-img { position: relative; overflow: hidden; background: var(--paper-2); }
+  .case-img img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.15) brightness(.95); }
+  .case-img::after { content: ""; position: absolute; inset: 0; background: var(--violet); mix-blend-mode: color; pointer-events: none; }
+  .case-nav { display: flex; gap: 8px; padding: 20px 40px; color: var(--violet); font-size: 13px; }
+  .case-nav button { background: none; border: 1px solid var(--line); color: var(--violet); padding: 6px 12px; cursor: pointer; font: inherit; }
+  .case-nav button.on { background: var(--violet); color: #fff; }
+
+  /* ---------- capabilities ---------- */
+  .cap-left { padding: 0 40px; position: relative; min-height: 640px; display: flex; flex-direction: column; }
+  .cap-left h2 { font-size: clamp(40px, 5vw, 68px); line-height: .95; color: var(--violet); margin-top: 64px; max-width: 460px; }
+  .cap-left .mark { margin-top: auto; margin-bottom: 40px; width: 62%; filter: brightness(0) invert(29%) sepia(78%) saturate(2700%) hue-rotate(245deg) brightness(.9); opacity: .9; }
+  .caps-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; margin-top: 64px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .cap { padding: 22px 24px; min-height: 240px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; transition: background .25s, color .25s; }
+  .cap:nth-child(even) { border-left: 1px solid var(--line); }
+  .cap:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .cap .h { color: var(--violet); font-size: 14px; display: flex; gap: 28px; }
+  .cap p { color: var(--muted); font-size: 13px; max-width: 240px; }
+  .cap:hover, .cap.on { background: var(--violet); }
+  .cap:hover .h, .cap:hover p, .cap.on .h, .cap.on p { color: #fff; }
+  .cap.on { background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1px); background-size: 4px 4px; }
+
+  /* ---------- founders ---------- */
+  .founders { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .founders > * + * { border-left: 1px solid var(--line); }
+  .f-intro { padding: 28px 40px 40px; display: flex; flex-direction: column; }
+  .f-intro h2 { font-size: 48px; line-height: .95; color: var(--violet); margin-top: 48px; }
+  .f-intro p { color: var(--muted); margin-top: auto; padding-top: 32px; }
+  .person { padding: 24px; }
+  .person .ph { aspect-ratio: 4/5; position: relative; overflow: hidden; background: var(--paper-2); }
+  .person .ph img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1); display: block; }
+  .person .ph::after { content: ""; position: absolute; inset: 0; background: var(--violet); mix-blend-mode: color; }
+  .person .meta { display: flex; justify-content: space-between; margin-top: 14px; color: var(--violet); font-size: 13px; }
+  .person h3 { font-size: 30px; color: var(--violet); line-height: 1; margin-top: 6px; }
+
+  /* ---------- cta ---------- */
+  .cta { background: var(--violet); color: #fff; padding: 72px 40px; text-align: center; background-image: radial-gradient(rgba(255,255,255,.12) 1px, transparent 1px); background-size: 4px 4px; }
+  .cta h2 { font-size: clamp(56px, 9vw, 128px); line-height: .9; }
+  .cta p { opacity: .8; margin: 20px auto 32px; max-width: 460px; }
+  .cta .btn { border-color: #fff; color: #fff; }
+  .cta .btn.solid { background: #fff; color: var(--violet); }
+  .pills { display: flex; justify-content: center; gap: 0; margin-top: 40px; }
+  .pills span { border: 1px solid rgba(255,255,255,.5); padding: 10px 22px; font-size: 12px; }
+  .pills span:first-child { border-radius: 999px 0 0 999px; }
+  .pills span:last-child { border-radius: 0 999px 999px 0; }
+  .pills span + span { border-left: 0; }
+
+  footer { width: var(--col); margin: 0 auto; display: flex; justify-content: space-between; padding: 20px 24px 40px; color: var(--violet); font-size: 12px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+
+  /* ---------- reveal ---------- */
+  .js .rv { opacity: 0; transform: translateY(14px); transition: opacity .8s ease, transform .8s ease; }
+  .js .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; transition: none; } }
+
+  @media (max-width: 860px) {
+    nav ul { display: none; }
+    .split, .founders { grid-template-columns: 1fr; }
+    .split > * + *, .founders > * + * { border-left: 0; border-top: 1px solid var(--line); }
+    .hero, .case-text, .cap-left, .f-intro, .cta { padding-left: 20px; padding-right: 20px; }
+    .case-img { aspect-ratio: 4/3; }
+    .case-text { min-height: 380px; }
+    .cap-left { min-height: 0; }
+    .cap-left .mark { margin-top: auto; margin-bottom: 40px; width: 62%; filter: brightness(0) invert(29%) sepia(78%) saturate(2700%) hue-rotate(245deg) brightness(.9); opacity: .9; }
+    .caps-grid { margin-top: 0; border-top: 0; }
+    .node.hide-m { display: none; }
+    .pills { flex-wrap: wrap; }
+  }
+  .chev { display: inline-block; vertical-align: -0.14em; flex: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand serif" href="#"><img src="../public/morzen_mark.png" alt="">Morzen</a>
+  <ul class="caps">
+    <li><a href="#trabalho">Trabalho</a></li>
+    <li><a href="#capacidades">Capacidades</a></li>
+    <li><a href="#fundadores">Fundadores</a></li>
+  </ul>
+  <a class="btn" href="#contato">Iniciar projeto <svg class="chev" viewBox="0 0 16 16" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></a>
+</nav>
+
+<main class="frame">
+
+  <!-- HERO -->
+  <section class="row">
+    <span class="node" style="left:0;top:0"></span><span class="node" style="left:100%;top:0"></span>
+    <div class="hero">
+      <div class="label caps"><div class="ticks"><i></i><i></i><i></i><i></i><i></i></div>Software sob medida · construído em público</div>
+      <h1 class="serif rv">Software feito<br>com <em>precisão</em>,<br>à vista de todos.</h1>
+      <div class="hero-foot rv">
+        <p>A Morzen desenvolve sites, sistemas e produtos digitais — e mostra os bastidores de cada decisão no caminho.</p>
+        <div class="actions">
+          <a class="btn solid" href="#contato">Iniciar projeto <svg class="chev" viewBox="0 0 16 16" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></a>
+          <a class="btn" href="#trabalho">Ver trabalho</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDY -->
+  <section class="row" id="trabalho">
+    <span class="node" style="left:0;top:0"></span><span class="node hide-m" style="left:50%;top:0"></span><span class="node" style="left:100%;top:0"></span>
+    <div class="split">
+      <div class="case-text">
+        <div class="label caps"><div class="ticks"><i></i><i></i><i></i><i></i><i></i></div>Nosso trabalho</div>
+        <span class="tag caps" id="case-tag">01 // Projeto</span>
+        <div class="bottom">
+          <a class="link caps" href="#">Ler mais</a>
+          <div>
+            <h2 class="serif caps" id="case-title">Landing pages</h2>
+            <p id="case-desc">Páginas rápidas e claras, pensadas para transformar visita em conversa.</p>
+          </div>
+        </div>
+      </div>
+      <div class="case-img"><img id="case-img" src="../public/landing_page_example.webp" alt="Exemplo de landing page"></div>
+    </div>
+    <div class="case-nav caps" style="border-top:1px solid var(--line)">
+      <button class="on" data-i="0">01</button><button data-i="1">02</button><button data-i="2">03</button>
+    </div>
+  </section>
+
+  <!-- CAPABILITIES -->
+  <section class="row" id="capacidades">
+    <span class="node" style="left:0;top:0"></span><span class="node hide-m" style="left:50%;top:0"></span><span class="node" style="left:100%;top:0"></span>
+    <div class="split">
+      <div class="cap-left">
+        <div class="label caps"><div class="ticks"><i></i><i></i><i></i><i></i><i></i></div>Capacidades</div>
+        <h2 class="serif rv">Do primeiro rascunho ao sistema em produção.</h2>
+        <img class="mark" src="../public/morzen_mark.png" alt="">
+      </div>
+      <div class="caps-grid">
+        <a class="cap on" href="#"><span class="h caps"><span>01 //</span>Sites &amp; landing pages</span><p>Sites profissionais, rápidos e prontos para converter visitantes.</p></a>
+        <a class="cap" href="#"><span class="h caps"><span>02 //</span>Dashboards</span><p>Painéis de indicadores que tornam os dados do negócio legíveis.</p></a>
+        <a class="cap" href="#"><span class="h caps"><span>03 //</span>Sistemas internos</span><p>Sistemas de gestão sob medida para a operação da empresa.</p></a>
+        <a class="cap" href="#"><span class="h caps"><span>04 //</span>Apps &amp; MVPs</span><p>Aplicativos e produtos digitais, do protótipo ao lançamento.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDERS -->
+  <section class="row" id="fundadores">
+    <span class="node" style="left:0;top:0"></span><span class="node hide-m" style="left:33.333%;top:0"></span><span class="node hide-m" style="left:66.666%;top:0"></span><span class="node" style="left:100%;top:0"></span>
+    <div class="founders">
+      <div class="f-intro">
+        <div class="label caps" style="padding:0"><div class="ticks"><i></i><i></i><i></i><i></i><i></i></div>Fundadores</div>
+        <h2 class="serif rv">Duas pessoas, uma startup em construção.</h2>
+        <p>Compartilhamos decisões, erros e aprendizados enquanto construímos a Morzen. Acompanhe a jornada antes mesmo de contratar.</p>
+      </div>
+      <div class="person rv">
+        <div class="ph"><img src="../public/jean_about_pic.webp" alt="Jean"></div>
+        <div class="meta caps"><span>01 //</span><span>Cofundador</span></div>
+        <h3 class="serif">Jean</h3>
+      </div>
+      <div class="person rv">
+        <div class="ph"><img src="../public/diego_about_pic.webp" alt="Diego"></div>
+        <div class="meta caps"><span>02 //</span><span>Cofundador</span></div>
+        <h3 class="serif">Diego</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="row" id="contato">
+    <span class="node" style="left:0;top:0"></span><span class="node" style="left:100%;top:0"></span>
+    <div class="cta">
+      <h2 class="serif">Vamos construir?</h2>
+      <p>Conte a ideia. A gente responde com um caminho claro — sem promessa inflada.</p>
+      <a class="btn solid" href="#">Iniciar projeto <svg class="chev" viewBox="0 0 16 16" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></a>
+      <div class="pills caps"><span>Instagram</span><span>LinkedIn</span><span>Bastidores</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="caps"><span>© 2026 Morzen</span><span>Software sob medida</span></footer>
+
+<script>
+  document.documentElement.classList.add("js");
+  const cases = [
+    { t: "Landing pages", d: "Páginas rápidas e claras, pensadas para transformar visita em conversa.", img: "../public/landing_page_example.webp" },
+    { t: "Dashboards", d: "Indicadores organizados para decisões mais rápidas no dia a dia.", img: "../public/dashboard_example.jpeg" },
+    { t: "Outros projetos", d: "Sistemas e produtos digitais desenhados para cada operação.", img: "../public/other_projects_example.webp" },
+  ];
+  document.querySelectorAll(".case-nav button").forEach(b => b.onclick = () => {
+    const i = +b.dataset.i, c = cases[i];
+    document.querySelectorAll(".case-nav button").forEach(x => x.classList.toggle("on", x === b));
+    document.getElementById("case-title").textContent = c.t;
+    document.getElementById("case-desc").textContent = c.d;
+    document.getElementById("case-img").src = c.img;
+    document.getElementById("case-tag").textContent = `0${i + 1} // Projeto`;
+  });
+  document.querySelectorAll(".cap").forEach(c => c.onmouseenter = () => document.querySelectorAll(".cap").forEach(x => x.classList.toggle("on", x === c)));
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: .15 });
+  document.querySelectorAll(".rv").forEach(el => io.observe(el));
+</script>
+</body>
+</html>
