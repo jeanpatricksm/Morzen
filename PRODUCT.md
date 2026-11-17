@@ -24,15 +24,15 @@ A landing e o primeiro contato publico com a marca. Ela deve direcionar visitant
 
 ## Capabilities and Constraints
 
-O site e uma aplicacao Next.js com Tailwind. A home deve preservar o nome Morzen, os assets de logo, as fotos de Jean e Diego, links sociais e o fluxo de novo projeto. Nao deve inventar clientes, depoimentos, numeros ou provas comerciais que nao foram fornecidos.
+O site e uma aplicacao Vite + Preact com prerender estatico (sem Next/Tailwind). A home deve preservar o nome Morzen, os assets de logo, as fotos de Jean e Diego, links sociais e o fluxo de novo projeto. Nao deve inventar clientes, depoimentos, numeros ou provas comerciais que nao foram fornecidos.
 
 ## Brand Commitments
 
-Morzen e uma marca jovem de software com identidade em roxo, azul, preto e branco. A nova landing deve ficar muito proxima da composicao visual da pagina Codex enviada como referencia, mas usando conteudo, assets e identidade da Morzen.
+Morzen e uma marca jovem de software com identidade em roxo, azul, preto e branco. A direcao visual atual e a "colagem editorial" descrita em `DESIGN.md` e `AGENTS.md`.
 
 ## Evidence on Hand
 
-Assets locais: `public/morzen_logo.png`, `public/morzen_logo_with_name.png`, `public/jean_about_pic.jpg`, `public/diego_about_pic.jpg`, exemplos de projetos em `public/landing_page_example.png`, `public/dashboard_example.jpeg` e `public/other_projects_example.png`. Nao ha prova social real fornecida.
+Assets locais: `public/morzen_mark.png`, fotos de Jean e Diego (`public/*_about_pic.webp`), exemplos reais em `public/projects/` (landing page Ana Julia Advogada e app iOS EOS Fit) e `public/dashboard_example.webp`. Nao ha depoimentos ou metricas reais fornecidas.
 
 ## Product Principles
 

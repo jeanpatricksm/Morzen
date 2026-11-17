@@ -2,30 +2,32 @@
 
 <!-- impeccable:design-schema 1 -->
 
+Referência completa e regras do dono do projeto: `AGENTS.md`. Mocks aprovados: `mocks/mock-03-colagem.html` e `mocks/mock-03-form.html`.
+
 ## Visual World
 
-A landing da Morzen usa uma estetica premium inspirada na pagina Codex: primeiro viewport full-screen, fundo abstrato suave em azul, violeta e branco, tipografia sans limpa, conteudo centralizado e controles em pill preto. A identidade deve parecer precisa, silenciosa e moderna, sem cara de agencia generica.
+"Colagem editorial": tipografia condensada gigante (MORZEN), blocos isométricos que representam os building blocks da web (DB, API, AUTH, UI, DATA + bloco MZ encaixando), gradientes roxos granulados, serifa fina para títulos editoriais e grids com linhas finas. Moderno, preciso e com personalidade, sem cara de template.
 
 ## Color
 
-Base clara com preto para texto e CTAs. Roxo e azul aparecem como atmosfera de fundo e acentos suaves, nunca como gradiente chamativo em texto. O dark mode nao deve dominar esta landing; a pagina deve preservar a cena clara do hero mesmo quando o tema global estiver escuro.
+Paleta fixa da marca (tokens em `src/styles/mz.css`): papel `#f7f7f4`, lilás-acinzentado `#ebe9f4`, tinta `#17151b`, roxo Morzen `#6445d8`, roxo profundo `#201835`, lilás `#b9a8ff` / `#c8b9ff`. Nada fora disso. Roxo aparece em acentos, gradientes e na seção de projetos; fotos de pessoas nunca recebem tinta roxa.
 
 ## Typography
 
-Inter como fonte principal. Titulos grandes, sem tracking negativo agressivo. Corpo curto e direto, com linhas compactas e hierarquia evidente. Evitar eyebrows repetitivos.
+Anton só no "MORZEN" do hero. Archivo para texto, UI e títulos pesados em caixa alta (peso 800). Italiana (serifa fina) para títulos editoriais da home e serviços. No formulário, só Archivo: legibilidade primeiro.
 
 ## Layout
 
-Hero ocupa praticamente todo o primeiro viewport. Navbar transparente no topo, logo a esquerda, links no centro e CTA preto a direita. O centro do hero recebe icone da marca, titulo, subtitulo e CTA. A base do hero carrega links de acompanhamento no lugar de logos de clientes.
+Navbar integrada ao hero que se recolhe numa pílula branca ao rolar. Hero com pilha isométrica apoiada sobre o nome (nunca tampando). Manifesto em bloco lilás com pilares orbitando o gradiente. Cards de capacidade empilhados no scroll sobre fundo roxo. Fundadores em grade editorial com recortes orgânicos.
 
 ## Components
 
-Botoes principais sao pills pretos com texto branco e icone de seta. Links secundarios sao leves, sem molduras pesadas. Cards abaixo do hero sao blocos editoriais com raio pequeno, bordas discretas e conteudo especifico da Morzen.
+Botões pretos em pill com chevron (nunca flechas). Pills com borda de 1.5px na cor tinta. Ícones lucide em círculos. Cards de escolha com moldura de navegador para deixar claro o que a imagem é.
 
 ## Motion
 
-O hero deve parecer vivo como a referencia Codex: camadas atmosfericas em movimento lento, entrada escalonada de logo, titulo, copy, CTAs e links sociais, flutuacao sutil do icone central e reveals suaves no scroll. O movimento e premium, silencioso e continuo; nunca usa bounce, delays exagerados ou efeitos que escondam conteudo quando scripts falham.
+Entrada suave do subtítulo e CTAs, blocos flutuando devagar, parallax leve com o mouse, transição da navbar, órbita lenta. Tudo pausável/respeitando `prefers-reduced-motion`; nada que esconda conteúdo importante se o JS falhar.
 
 ## Boundaries
 
-Nao copiar marca, textos ou assets da OpenAI. Nao inventar clientes, metricas, depoimentos ou cases. Nao usar rosa forte, dark pesado, glass decorativo sem funcao ou grids genericos.
+Não inventar clientes, depoimentos ou métricas. Não copiar marcas de terceiros. Copy segue a do site original (SEO).
