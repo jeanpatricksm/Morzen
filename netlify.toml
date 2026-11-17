@@ -1,0 +1,12 @@
+# Site estático (Vite + Preact com prerender). Sobrescreve as configs antigas
+# da UI do Netlify, que ainda apontavam para o build do Next.js.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # O plugin @netlify/plugin-nextjs ficou instalado pela UI e falha sem a
+  # pasta .next. Isso faz ele pular. Pode remover depois de desinstalar o
+  # plugin em Site configuration > Build & deploy.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
