@@ -2,7 +2,9 @@ import type { LucideIcon } from "lucide-preact";
 import type { Choice } from "./qualify";
 
 interface ChoiceGroupProps {
+  name: string;
   label: string;
+  optional?: boolean;
   choices: Choice[];
   value: string;
   onChange: (id: string) => void;
@@ -11,45 +13,60 @@ interface ChoiceGroupProps {
   icons?: Record<string, LucideIcon>;
 }
 
-export function ChoiceGroup({ label, choices, value, onChange, variant = "pills", icons }: ChoiceGroupProps) {
+export function ChoiceGroup({
+  name,
+  label,
+  optional,
+  choices,
+  value,
+  onChange,
+  variant = "pills",
+  icons,
+}: ChoiceGroupProps) {
   return (
     <fieldset className="mz-fieldset">
-      <legend className="mz-legend">{label}</legend>
-      <div className={variant === "rows" ? "mz-rows" : "mz-pills"} role="radiogroup" aria-label={label}>
+      <legend className="mz-legend">
+        {label} {optional ? <i>opcional</i> : null}
+      </legend>
+      <div className={variant === "rows" ? "mz-rows" : "mz-pills"}>
         {choices.map((choice) => {
           const Icon = icons?.[choice.id];
           const selected = value === choice.id;
           if (variant === "rows") {
             return (
-              <button
-                key={choice.id}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                className={`mz-row ${selected ? "is-sel" : ""}`}
-                onClick={() => onChange(choice.id)}
-              >
-                <span className="n">{Icon ? <Icon aria-hidden="true" /> : null}</span>
+              <label key={choice.id} className={`mz-row ${selected ? "is-sel" : ""}`}>
+                <input
+                  className="sr-only"
+                  type="radio"
+                  name={name}
+                  value={choice.id}
+                  checked={selected}
+                  onChange={() => onChange(choice.id)}
+                />
+                <span className="n" aria-hidden="true">
+                  {Icon ? <Icon /> : null}
+                </span>
                 <span>
                   <b>{choice.label}</b>
                   {choice.detail ? <small>{choice.detail}</small> : null}
                 </span>
                 <span className="dot" aria-hidden="true" />
-              </button>
+              </label>
             );
           }
           return (
-            <button
-              key={choice.id}
-              type="button"
-              role="radio"
-              aria-checked={selected}
-              className={`mz-pill ${selected ? "is-sel" : ""}`}
-              onClick={() => onChange(choice.id)}
-            >
+            <label key={choice.id} className={`mz-pill ${selected ? "is-sel" : ""}`}>
+              <input
+                className="sr-only"
+                type="radio"
+                name={name}
+                value={choice.id}
+                checked={selected}
+                onChange={() => onChange(choice.id)}
+              />
               {Icon ? <Icon aria-hidden="true" /> : null}
-              {choice.label}
-            </button>
+              <span>{choice.label}</span>
+            </label>
           );
         })}
       </div>

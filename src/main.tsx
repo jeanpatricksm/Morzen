@@ -1,8 +1,8 @@
-import "@fontsource/anton/400.css";
 import "@fontsource/archivo/400.css";
 import "@fontsource/archivo/500.css";
+import "@fontsource/archivo/600.css";
 import "@fontsource/archivo/800.css";
-import "@fontsource/italiana/400.css";
+import "@fontsource/chakra-petch/latin-700.css";
 import "./styles/mz.css";
 
 import { useEffect, useRef } from "preact/hooks";
@@ -14,7 +14,43 @@ import { NewProjectPage } from "./pages/new-project";
 import { NotFound } from "./pages/not-found";
 import { ServicePage } from "./pages/service";
 
-/** Rolagem e <title> ao navegar no cliente (o HTML inicial já vem pronto do prerender). */
+function prefersReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function upsertMeta(name: string, content: string | undefined) {
+  const existing = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
+  if (!content) {
+    existing?.remove();
+    return;
+  }
+  if (existing) {
+    existing.setAttribute("content", content);
+  } else {
+    const el = document.createElement("meta");
+    el.setAttribute("name", name);
+    el.setAttribute("content", content);
+    document.head.appendChild(el);
+  }
+}
+
+function upsertCanonical(href: string | undefined) {
+  const existing = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!href) {
+    existing?.remove();
+    return;
+  }
+  if (existing) {
+    existing.setAttribute("href", href);
+  } else {
+    const el = document.createElement("link");
+    el.setAttribute("rel", "canonical");
+    el.setAttribute("href", href);
+    document.head.appendChild(el);
+  }
+}
+
+/** Rolagem e metadados do <head> ao navegar no cliente (o HTML inicial já vem pronto do prerender). */
 function RouteEffects() {
   const { url } = useLocation();
   const first = useRef(true);
@@ -22,17 +58,25 @@ function RouteEffects() {
   useEffect(() => {
     const head = getHead(url);
     document.title = head.title;
-    document.querySelector('meta[name="description"]')?.setAttribute("content", head.description);
+    upsertMeta("description", head.description);
+
+    const robots = head.elements.find((e) => e.type === "meta" && e.props.name === "robots")?.props.content;
+    upsertMeta("robots", robots);
+
+    const canonical = head.elements.find((e) => e.type === "link" && e.props.rel === "canonical")?.props.href;
+    upsertCanonical(canonical);
 
     const hash = window.location.hash.slice(1);
     if (first.current) {
       first.current = false;
       if (!hash) return;
     }
+
+    const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
     if (hash) {
-      requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" }));
+      requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ behavior }));
     } else {
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [url]);
 
@@ -43,6 +87,9 @@ export function App() {
   return (
     <LocationProvider>
       <div class="mz">
+        <a className="mz-skip" href="#conteudo">
+          Pular para o conteúdo
+        </a>
         <RouteEffects />
         <Navbar />
         <Router>

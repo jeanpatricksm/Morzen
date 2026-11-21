@@ -19,7 +19,7 @@ export const areaServed = [
 export const socialProfiles = {
   instagram: "https://www.instagram.com/morzen.zenmor",
   linkedin: "https://www.linkedin.com/company/morzen.zenmor",
-  github: "https://github.com/jeanpatrickm/Morzen",
+  github: "https://github.com/jeanpatricksm/Morzen",
   jeanLinkedin: "https://www.linkedin.com/in/jeanpatrickm/",
   diegoLinkedin: "https://www.linkedin.com/in/diegorezm/",
 } as const;

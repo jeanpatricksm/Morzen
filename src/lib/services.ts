@@ -33,7 +33,7 @@ export const services: Service[] = [
       {
         question: "Quanto custa um site profissional?",
         answer:
-          "Depende do escopo, das integrações e do nível de personalização. Depois de uma primeira conversa sobre o seu contexto, enviamos uma proposta com valor e prazo fechados, sem custo para conversar.",
+          "Varia conforme o número de páginas, o nível de direção visual e as integrações (formulários, CRM, analytics ou CMS). Depois de entender o contexto do negócio, enviamos uma proposta com valor e prazo fechados — a conversa inicial é sem custo.",
       },
       {
         question: "Quanto tempo leva para o site ficar pronto?",
@@ -75,7 +75,7 @@ export const services: Service[] = [
       {
         question: "Quanto custa um dashboard sob medida?",
         answer:
-          "Depende do escopo, das integrações e do nível de personalização. Depois de uma primeira conversa sobre o seu contexto, enviamos uma proposta com valor e prazo fechados, sem custo para conversar.",
+          "Depende da quantidade de fontes de dados conectadas, regras de cálculo, perfis de acesso e telas necessárias para a equipe. Mapeamos o essencial na conversa inicial e enviamos proposta fechada por etapa, sem custo para conversar.",
       },
       {
         question: "Qual a diferença para o Power BI?",
@@ -112,7 +112,7 @@ export const services: Service[] = [
       {
         question: "Quanto custa um sistema para empresa?",
         answer:
-          "Depende do escopo, das integrações e do nível de personalização. Depois de uma primeira conversa sobre o seu contexto, enviamos uma proposta com valor e prazo fechados, sem custo para conversar.",
+          "Sistemas internos variam conforme os fluxos mapeados, integrações com ferramentas que você já usa e número de módulos da primeira entrega. Sempre desenhamos uma primeira versão enxuta que já tira o peso das planilhas, com valor e prazo fechados na proposta.",
       },
       {
         question: "Quando vale trocar a planilha de controle por um sistema?",
@@ -154,7 +154,7 @@ export const services: Service[] = [
       {
         question: "Quanto custa desenvolver um aplicativo?",
         answer:
-          "Depende do escopo, das integrações e do nível de personalização. Depois de uma primeira conversa sobre o seu contexto, enviamos uma proposta com valor e prazo fechados, sem custo para conversar.",
+          "Depende das plataformas (iOS, web ou ambos), integrações externas e escopo da primeira versão (MVP). Definimos juntos o recorte mínimo que valida o produto com usuários reais e enviamos uma proposta com valor e prazo fechados.",
       },
       {
         question: "O que é um MVP?",

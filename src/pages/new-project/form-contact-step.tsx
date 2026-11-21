@@ -1,7 +1,7 @@
+import { Check, ChevronRight, ClipboardList, Mail, MessageCircle, Phone } from "lucide-preact";
 import type { TargetedSubmitEvent } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { useLocation } from "preact-iso";
-import { Check, ClipboardList, Mail, MessageCircle, Phone } from "lucide-preact";
+import { ChoiceGroup } from "./choice-group";
 import type { Project } from "./projects";
 import {
   type Answers,
@@ -14,7 +14,6 @@ import {
   teamSizes,
   timelines,
 } from "./qualify";
-import { ChoiceGroup } from "./choice-group";
 import { StepNav } from "./step-nav";
 
 const FORMSPREE_URL = "https://formspree.io/f/mbgjrgwq";
@@ -31,7 +30,11 @@ interface FormState {
 }
 
 function FieldError({ message }: { message?: string }) {
-  return message ? <span className="mz-err">{message}</span> : null;
+  return message ? (
+    <span className="mz-err" role="alert">
+      {message}
+    </span>
+  ) : null;
 }
 
 interface FormContactProps {
@@ -40,10 +43,16 @@ interface FormContactProps {
   handleBack: VoidFunction;
   onSent: VoidFunction;
   total: number;
+  headingRef: { current: HTMLHeadingElement | null };
 }
 
 function formatPhone(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 11);
+  let digits = value.replace(/\D/g, "");
+  // Remove código do país (+55) caso venha de autofill ou colagem.
+  if (digits.length > 11 && digits.startsWith("55")) {
+    digits = digits.slice(2);
+  }
+  digits = digits.slice(0, 11);
 
   if (digits.length <= 2) return digits;
 
@@ -65,8 +74,8 @@ export function FormContactStep({
   handleBack,
   onSent,
   total,
+  headingRef,
 }: FormContactProps) {
-  const { route } = useLocation();
   const [formState, setFormState] = useState<FormState>({ submitting: false, succeeded: false, errors: [] });
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -76,11 +85,10 @@ export function FormContactStep({
 
   useEffect(() => {
     if (!formState.succeeded) return;
-
     onSent();
-    const redirectTimeout = window.setTimeout(() => route("/"), 6000);
-    return () => window.clearTimeout(redirectTimeout);
-  }, [formState.succeeded, route, onSent]);
+  }, [formState.succeeded, onSent]);
+
+  const phoneRequired = channel !== "email";
 
   const handleFormSubmit = async (e: TargetedSubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -103,7 +111,11 @@ export function FormContactStep({
         errors: data.errors?.length ? data.errors : [{ message: "Não foi possível enviar agora. Tente de novo." }],
       });
     } catch {
-      setFormState({ submitting: false, succeeded: false, errors: [{ message: "Sem conexão. Verifique a internet e tente de novo." }] });
+      setFormState({
+        submitting: false,
+        succeeded: false,
+        errors: [{ message: "Sem conexão. Verifique a internet e tente de novo." }],
+      });
     }
   };
 
@@ -113,17 +125,17 @@ export function FormContactStep({
   if (formState.succeeded) {
     return (
       <div className="mz-step">
-        <div className="mz-done">
+        <div className="mz-done" role="status">
           <div>
-            <div className="mz-badge" aria-hidden="true">
+            <div className="mz-done-badge" aria-hidden="true">
               <Check />
             </div>
-            <h2 style={{ marginTop: "26px" }}>Recebemos. Obrigado!</h2>
-            <p className="mz-lead" style={{ margin: "0 auto" }}>
+            <h2>Recebemos. Obrigado!</h2>
+            <p className="mz-lead">
               Jean ou Diego vai te responder em até 1 dia útil — já sabendo do seu contexto.
             </p>
-            <a className="mz-btn" href="/" style={{ marginTop: "26px" }}>
-              Voltar ao site
+            <a className="mz-btn" href="/">
+              Voltar ao site <ChevronRight aria-hidden="true" />
             </a>
           </div>
         </div>
@@ -141,8 +153,10 @@ export function FormContactStep({
 
   return (
     <form className="mz-step" onSubmit={handleFormSubmit}>
-      <p className="mz-eyebrow">Etapa 05</p>
-      <h2>Para onde a gente responde?</h2>
+      <p className="mz-kicker">Etapa 05</p>
+      <h2 ref={headingRef} tabIndex={-1}>
+        Para onde a gente responde?
+      </h2>
       <p className="mz-lead">Último passo. Com isso, já chegamos na conversa sabendo do seu contexto.</p>
 
       {Object.entries({
@@ -163,7 +177,7 @@ export function FormContactStep({
       ))}
 
       <div className="mz-body mz-contact-grid">
-        <div style={{ display: "grid", gap: "26px" }}>
+        <div className="mz-contact-fields">
           <div className="mz-grid2">
             <label className="mz-field" htmlFor="nome">
               <span className="mz-flabel">Nome</span>
@@ -198,8 +212,18 @@ export function FormContactStep({
               <FieldError message={fieldError("email")} />
             </label>
           </div>
+          <ChoiceGroup
+            name="channel"
+            label="Como prefere ser contatado?"
+            choices={contactChannels}
+            value={channel}
+            onChange={setChannel}
+            icons={{ whatsapp: MessageCircle, email: Mail, ligacao: Phone }}
+          />
           <label className="mz-field" htmlFor="telefone">
-            <span className="mz-flabel">WhatsApp</span>
+            <span className="mz-flabel">
+              WhatsApp {!phoneRequired ? <i>opcional</i> : null}
+            </span>
             <input
               id="telefone"
               name="phone"
@@ -208,22 +232,16 @@ export function FormContactStep({
               value={phone}
               onInput={(e) => setPhone(formatPhone(e.currentTarget.value))}
               maxLength={15}
-              inputMode="numeric"
-              pattern="\\([0-9]{2}\\) [0-9]{4,5}-[0-9]{4}"
+              inputMode="tel"
+              pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
               title="Use o formato (xx) xxxxx-xxxx"
-              autoComplete="tel"
-              required
+              autoComplete="tel-national"
+              aria-invalid={Boolean(fieldError("phone"))}
+              required={phoneRequired}
             />
             <span className="mz-hint">Use o formato (xx) xxxxx-xxxx</span>
             <FieldError message={fieldError("phone")} />
           </label>
-          <ChoiceGroup
-            label="Como prefere ser contatado?"
-            choices={contactChannels}
-            value={channel}
-            onChange={setChannel}
-            icons={{ whatsapp: MessageCircle, email: Mail, ligacao: Phone }}
-          />
           <div className="mz-honey" aria-hidden="true">
             <label htmlFor="honey">Deixe este campo em branco</label>
             <input
@@ -249,7 +267,7 @@ export function FormContactStep({
           </p>
           <dl>
             {summary.map(([k, v]) => (
-              <div key={k} style={{ display: "contents" }}>
+              <div key={k} className="mz-summary-row">
                 <dt>{k}</dt>
                 <dd>{v}</dd>
               </div>

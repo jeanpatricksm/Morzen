@@ -1,6 +1,6 @@
 import { Check, ChevronLeft, ChevronRight, Plus } from "lucide-preact";
 import { useRoute } from "preact-iso";
-import { IsoCube } from "@/components/iso";
+import { Footer } from "@/components/footer";
 import { areaServed, siteName, siteUrl } from "@/lib/seo";
 import { getService, services } from "@/lib/services";
 import { NotFound } from "./not-found";
@@ -44,127 +44,131 @@ export function ServicePage() {
   ];
 
   return (
-    <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
-      />
+    <>
+      <main id="conteudo">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
+        />
 
-      <article>
-        <header className="mz-svc-hero">
-          <div className="mz-blob-wrap" aria-hidden="true" />
-          <div className="mz-wrap">
-            <a href="/#servicos" className="mz-back">
-              <ChevronLeft aria-hidden="true" /> Todos os serviços
-            </a>
-            <div className="mz-svc-hero-grid">
-              <div>
-                <p className="mz-eyebrow">Software sob medida · {service.shortTitle}</p>
-                <h1>{service.title}</h1>
+        <article>
+          <header className="mz-svc-hero">
+            <div className="mz-svc-art" aria-hidden="true">
+              <img src="/art/codex-sky.webp" alt="" width={1600} height={894} decoding="async" />
+              <div className="mz-svc-art-veil" />
+            </div>
+            <div className="mz-wrap mz-svc-hero-inner">
+              <a href="/#servicos" className="mz-back">
+                <ChevronLeft aria-hidden="true" /> Todos os serviços
+              </a>
+              <div className="mz-svc-hero-grid">
+                <div>
+                  <p className="mz-feature-tag">Software sob medida · {service.shortTitle}</p>
+                  <h1>{service.title}</h1>
+                </div>
+                <p className="mz-svc-intro">{service.introduction}</p>
               </div>
-              <p className="mz-svc-intro">{service.introduction}</p>
             </div>
-          </div>
-          <svg className="mz-svc-cube" viewBox="-80 -90 160 160" aria-hidden="true">
-            <g className="mz-bob">
-              <IsoCube x={-0.5} y={-0.5} z={-0.5} size={64} color="v" label="MZ" />
-            </g>
-          </svg>
-        </header>
+          </header>
 
-        <section className="mz-svc-sec">
-          <div className="mz-wrap mz-svc-split">
-            <div>
-              <p className="mz-eyebrow">O que buscamos melhorar</p>
-              <h2 className="mz-ital">Menos ruído entre a necessidade e o resultado.</h2>
+          <section className="mz-svc-sec">
+            <div className="mz-wrap mz-svc-split">
+              <div>
+                <p className="mz-feature-tag">O que buscamos melhorar</p>
+                <h2>Menos ruído entre a necessidade e o resultado.</h2>
+              </div>
+              <ul className="mz-svc-list">
+                {service.outcomes.map((outcome) => (
+                  <li key={outcome}>
+                    <span className="ico" aria-hidden="true">
+                      <Check />
+                    </span>
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="mz-svc-list">
-              {service.outcomes.map((outcome) => (
-                <li key={outcome}>
-                  <span className="ico">
-                    <Check aria-hidden="true" />
-                  </span>
-                  {outcome}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+          </section>
 
-        <section className="mz-svc-sec is-lilac">
-          <div className="mz-wrap">
-            <p className="mz-eyebrow">Como construímos</p>
-            <h2 className="mz-svc-big">O contexto vem antes da tecnologia.</h2>
-            <ol className="mz-svc-steps">
-              {service.approach.map((step, index) => (
-                <li key={step}>
-                  <span>0{index + 1}</span>
-                  <p>{step}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        <section className="mz-svc-sec">
-          <div className="mz-wrap mz-svc-split">
-            <div>
-              <p className="mz-eyebrow">Perguntas frequentes</p>
-              <h2 className="mz-ital">O que costumam nos perguntar.</h2>
+          <section className="mz-svc-sec is-lilac">
+            <div className="mz-wrap">
+              <p className="mz-feature-tag">Como construímos</p>
+              <h2 className="mz-svc-big">O contexto vem antes da tecnologia.</h2>
+              <ol className="mz-svc-steps">
+                {service.approach.map((step, index) => (
+                  <li key={step}>
+                    <span className="mz-step-num">0{index + 1}</span>
+                    <p>{step}</p>
+                  </li>
+                ))}
+              </ol>
             </div>
-            <div className="mz-faq">
-              {service.faq.map((item) => (
-                <details key={item.question}>
-                  <summary>
-                    {item.question}
-                    <Plus aria-hidden="true" />
-                  </summary>
-                  <p>{item.answer}</p>
-                </details>
-              ))}
+          </section>
+
+          <section className="mz-svc-sec">
+            <div className="mz-wrap mz-svc-split">
+              <div>
+                <p className="mz-feature-tag">Perguntas frequentes</p>
+                <h2>O que costumam nos perguntar.</h2>
+              </div>
+              <div className="mz-faq">
+                {service.faq.map((item) => (
+                  <details key={item.question}>
+                    <summary>
+                      <span>{item.question}</span>
+                      <Plus aria-hidden="true" />
+                    </summary>
+                    <p>{item.answer}</p>
+                  </details>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="mz-svc-cta">
-          <div className="mz-wrap">
-            <p className="mz-eyebrow">Próximo passo</p>
-            <h2 className="mz-ital">Conte o que precisa funcionar melhor.</h2>
-            <p>A conversa começa pelo problema, pelo momento do negócio e por quem vai usar a solução.</p>
-            <a href="/new_project" className="mz-btn">
-              Conversar sobre um projeto <ChevronRight aria-hidden="true" />
-            </a>
-          </div>
-        </section>
+          <section className="mz-close-sec">
+            <div className="mz-wrap">
+              <div className="mz-close-banner">
+                <img
+                  className="mz-close-bg"
+                  src="/art/codex-sky.webp"
+                  alt=""
+                  width={1600}
+                  height={894}
+                  loading="lazy"
+                  decoding="async"
+                  aria-hidden="true"
+                />
+                <div className="mz-close-veil" aria-hidden="true" />
+                <div className="mz-close-inner">
+                  <h2>Conte o que precisa funcionar melhor.</h2>
+                  <p>A conversa começa pelo problema, pelo momento do negócio e por quem vai usar a solução.</p>
+                  <div className="mz-close-actions">
+                    <a href="/new_project" className="mz-btn-light">
+                      Conversar sobre um projeto <ChevronRight aria-hidden="true" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
-        <aside className="mz-svc-related" aria-labelledby="related-services">
-          <div className="mz-wrap">
-            <h2 id="related-services">Outros caminhos que podemos construir</h2>
-            <nav>
-              {relatedServices.map((item) => (
-                <a key={item.slug} href={`/servicos/${item.slug}`}>
-                  {item.title}
-                  <ChevronRight aria-hidden="true" />
-                </a>
-              ))}
-            </nav>
-          </div>
-        </aside>
-      </article>
+          <aside className="mz-svc-related" aria-labelledby="related-services">
+            <div className="mz-wrap">
+              <h2 id="related-services">Outros caminhos que podemos construir</h2>
+              <nav aria-label="Outros serviços">
+                {relatedServices.map((item) => (
+                  <a key={item.slug} href={`/servicos/${item.slug}`}>
+                    <span>{item.title}</span>
+                    <ChevronRight aria-hidden="true" />
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </aside>
+        </article>
+      </main>
+
       <Footer />
-    </main>
-  );
-}
-
-export function Footer() {
-  return (
-    <footer className="mz-footer">
-      <div className="mz-wrap">
-        <span>
-          © {new Date().getFullYear()} Morzen · Produtos digitais construídos com contexto, transparência e
-          proximidade. · <a href="mailto:contato@morzen.com.br">contato@morzen.com.br</a>
-        </span>
-      </div>
-    </footer>
+    </>
   );
 }

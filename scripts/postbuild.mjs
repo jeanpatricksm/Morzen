@@ -8,11 +8,14 @@ const require = createRequire(import.meta.url);
 const dist = new URL("../dist/", import.meta.url);
 const SITE = "https://morzen.com.br";
 // Atualize quando o conteúdo das páginas mudar.
-const LAST_MODIFIED = "2026-11-16";
+const LAST_MODIFIED = "2026-11-21";
 
-// services.ts é TypeScript; extraímos slug/título com uma leitura simples.
+// services.ts é TypeScript; extraímos slug e title por bloco de objeto para não depender da ordem das propriedades.
 const servicesSrc = await readFile(new URL("../src/lib/services.ts", import.meta.url), "utf8");
-const services = [...servicesSrc.matchAll(/slug:\s*"([^"]+)",\s*title:\s*"([^"]+)"/g)].map(([, slug, title]) => ({ slug, title }));
+const services = [];
+for (const m of servicesSrc.matchAll(/slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"/g)) {
+  services.push({ slug: m[1], title: m[2] });
+}
 if (services.length === 0) throw new Error("Nenhum serviço encontrado em services.ts");
 
 // sitemap.xml
@@ -28,7 +31,7 @@ await writeFile(
 );
 
 // robots.txt
-await writeFile(new URL("robots.txt", dist), `User-Agent: *\nAllow: /\nDisallow: /api/\n\nHost: ${SITE}\nSitemap: ${SITE}/sitemap.xml\n`);
+await writeFile(new URL("robots.txt", dist), `User-Agent: *\nAllow: /\n\nHost: ${SITE}\nSitemap: ${SITE}/sitemap.xml\n`);
 
 // 404.html na raiz (hosts estáticos procuram esse arquivo)
 await copyFile(new URL("404/index.html", dist), new URL("404.html", dist));
