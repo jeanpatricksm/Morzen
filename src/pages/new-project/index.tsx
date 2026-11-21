@@ -1,6 +1,5 @@
-import { ChevronLeft, Clock, Eye, MapPin } from "lucide-preact";
-import { useCallback, useEffect, useState } from "preact/hooks";
-import { IsoCube, type IsoColor } from "@/components/iso";
+import { Check, ChevronLeft, Clock, Eye, MapPin } from "lucide-preact";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import { FormContactStep } from "./form-contact-step";
 import { FormProjectStep } from "./form-project-step";
 import { FormQualifyStep } from "./form-qualify-step";
@@ -10,14 +9,7 @@ import { type Answers, emptyAnswers } from "./qualify";
 const storageKey = "morzen-new-project";
 const totalSteps = 5;
 
-// Progresso como pilha de blocos: uma camada por etapa concluída.
-const PROGRESS: [number, number, IsoColor, string][] = [
-  [-1.5, -0.6, "d", "IDEIA"],
-  [-0.5, -0.6, "v", "FASE"],
-  [0.5, -0.6, "d", "PRAZO"],
-  [-1, 0.4, "l", "INFO"],
-  [0, 0.4, "v", "OI!"],
-];
+const STEP_LABELS = ["Ideia", "Momento", "Prazo", "Contexto", "Contato"] as const;
 
 function findProject(id: string): Project | undefined {
   if (id === unknownProject.id) return unknownProject;
@@ -27,31 +19,52 @@ function findProject(id: string): Project | undefined {
 export function NewProjectPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState<Answers>(emptyAnswers);
+  const hydratedRef = useRef(false);
+  const didNavigateRef = useRef(false);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
 
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(storageKey);
-      if (!saved) return;
-      const { step, answers: savedAnswers } = JSON.parse(saved);
-      setAnswers((prev) => ({ ...prev, ...savedAnswers }));
-      if (step >= 1 && step <= totalSteps) setCurrentStep(step);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === "object") {
+          if (parsed.answers && typeof parsed.answers === "object") {
+            setAnswers((prev) => ({ ...prev, ...parsed.answers }));
+          }
+          if (typeof parsed.step === "number" && parsed.step >= 1 && parsed.step <= totalSteps) {
+            setCurrentStep(parsed.step);
+          }
+        }
+      }
     } catch {}
+    hydratedRef.current = true;
   }, []);
 
   useEffect(() => {
+    if (!hydratedRef.current) return;
     try {
       window.localStorage.setItem(storageKey, JSON.stringify({ step: currentStep, answers }));
     } catch {}
   }, [currentStep, answers]);
 
+  // Move foco para o título da etapa ao avançar/voltar (acessibilidade sem aria-live ruidoso).
+  useEffect(() => {
+    if (!didNavigateRef.current) return;
+    requestAnimationFrame(() => headingRef.current?.focus());
+  }, [currentStep]);
+
   const updateAnswers = (patch: Partial<Answers>) => setAnswers((prev) => ({ ...prev, ...patch }));
 
-  const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const goToStep = (next: number) => {
+    didNavigateRef.current = true;
+    setCurrentStep(next);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
   };
 
-  const handleBack = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => goToStep(Math.min(currentStep + 1, totalSteps));
+  const handleBack = () => goToStep(Math.max(currentStep - 1, 1));
 
   const clearSaved = useCallback(() => {
     try {
@@ -62,77 +75,108 @@ export function NewProjectPage() {
   const selectedProject = findProject(answers.projectId);
 
   return (
-    <main className="mz-np">
+    <main id="conteudo" className="mz-np">
       <header className="mz-np-bar">
         <a className="mz-brand" href="/" aria-label="Voltar para o site da Morzen">
           <span className="mz-logo">
             <img src="/morzen_mark.png" alt="" width={26} height={18} />
           </span>
-          Morzen
+          <span>Morzen</span>
         </a>
-        <div className="mz-steps-pill" aria-label={`Etapa ${currentStep} de ${totalSteps}`}>
-          {Array.from({ length: totalSteps }, (_, i) => (
-            <span key={i} className={i + 1 < currentStep ? "is-done" : i + 1 === currentStep ? "is-on" : ""}>
-              {i + 1}
-            </span>
-          ))}
+
+        <div className="mz-steps-pill" role="navigation" aria-label={`Progresso: etapa ${currentStep} de ${totalSteps}`}>
+          {STEP_LABELS.map((label, i) => {
+            const num = i + 1;
+            const isDone = num < currentStep;
+            const isOn = num === currentStep;
+            return (
+              <button
+                key={label}
+                type="button"
+                className={isDone ? "is-done" : isOn ? "is-on" : undefined}
+                disabled={!isDone}
+                aria-current={isOn ? "step" : undefined}
+                aria-label={`Etapa ${num}: ${label}`}
+                onClick={() => isDone && goToStep(num)}
+              >
+                {num}
+              </button>
+            );
+          })}
         </div>
+
         <a className="mz-np-back" href="/">
-          <ChevronLeft aria-hidden="true" /> Voltar ao site
+          <ChevronLeft aria-hidden="true" />
+          <span className="mz-np-back-full">Voltar ao site</span>
+          <span className="mz-np-back-short" aria-hidden="true">
+            Voltar
+          </span>
         </a>
       </header>
 
       <div className="mz-np-page">
         <aside className="mz-side">
-          <div className="mz-blob" aria-hidden="true" />
-          <small>Começar uma conversa</small>
-          <h1>
-            Vamos
-            <br />
-            construir <em>algo</em>
-            <br />
-            importante
-          </h1>
-          <p>Cinco passos rápidos, quase tudo com um clique. Assim a primeira conversa já começa no seu contexto.</p>
-          <ul>
-            <li>
-              <Clock aria-hidden="true" /> Resposta em até 1 dia útil
-            </li>
-            <li>
-              <MapPin aria-hidden="true" /> Todo o Brasil e, presencialmente, o Vale do Paraíba
-            </li>
-            <li>
-              <Eye aria-hidden="true" /> Você acompanha cada etapa da construção
-            </li>
-          </ul>
+          <div className="mz-side-art" aria-hidden="true">
+            <img src="/art/codex-sky.webp" alt="" width={1600} height={894} decoding="async" />
+          </div>
 
-          <div className="mz-progress">
-            <svg className="stack" viewBox="-110 -150 220 210" aria-hidden="true">
-              {PROGRESS.map(([x, z, c, l], i) => (
-                <g key={l} className={`mz-blk ${i >= currentStep - 1 ? "is-ghost" : ""}`}>
-                  <IsoCube x={x} y={-0.5} z={z} size={44} color={c} label={l} labelSize={l.length > 5 ? 7.5 : 9.5} />
-                </g>
-              ))}
-            </svg>
+          <div className="mz-side-body">
+            <p className="mz-feature-tag">Começar uma conversa</p>
+            <h1>
+              Vamos construir <span>algo</span> importante
+            </h1>
+            <p className="mz-side-copy">
+              Cinco passos rápidos, quase tudo com um clique. Assim a primeira conversa já começa no seu contexto.
+            </p>
+            <ul className="mz-side-list">
+              <li>
+                <Clock aria-hidden="true" /> Resposta em até 1 dia útil
+              </li>
+              <li>
+                <MapPin aria-hidden="true" /> Todo o Brasil e, presencialmente, o Vale do Paraíba
+              </li>
+              <li>
+                <Eye aria-hidden="true" /> Você acompanha cada etapa da construção
+              </li>
+            </ul>
+
+            <ol className="mz-side-steps" aria-label="Etapas do formulário">
+              {STEP_LABELS.map((label, i) => {
+                const num = i + 1;
+                const isDone = num < currentStep;
+                const isOn = num === currentStep;
+                return (
+                  <li key={label} className={isDone ? "is-done" : isOn ? "is-on" : undefined}>
+                    <span className="mz-side-dot" aria-hidden="true">
+                      {isDone ? <Check /> : `0${num}`}
+                    </span>
+                    <span>{label}</span>
+                  </li>
+                );
+              })}
+            </ol>
+
             <div className="mz-who">
-              <div className="lbl">Quem vai te responder</div>
               <div className="mz-faces">
-                <img src="/jean_about_pic.webp" alt="Jean" width={56} height={66} />
-                <img src="/diego_about_pic.webp" alt="Diego" width={56} height={66} />
+                <img src="/jean_about_pic.webp" alt="Jean Patrick" width={48} height={48} />
+                <img src="/diego_about_pic.webp" alt="Diego Rezende" width={48} height={48} />
               </div>
-              <p>Jean &amp; Diego</p>
-              <span>Fundadores, sem intermediários</span>
+              <div>
+                <p>Jean &amp; Diego</p>
+                <span>Fundadores, sem intermediários</span>
+              </div>
             </div>
           </div>
         </aside>
 
-        <section className="mz-main" aria-live="polite">
+        <section className="mz-main" aria-label={`Etapa ${currentStep} de ${totalSteps}`}>
           {currentStep === 1 && (
             <FormProjectStep
               onProjectSelect={(project) => updateAnswers({ projectId: project.id })}
               selectedId={answers.projectId}
               handleNext={handleNext}
               total={totalSteps}
+              headingRef={headingRef}
             />
           )}
 
@@ -144,6 +188,7 @@ export function NewProjectPage() {
               onChange={updateAnswers}
               handleNext={handleNext}
               handleBack={handleBack}
+              headingRef={headingRef}
             />
           )}
 
@@ -154,6 +199,7 @@ export function NewProjectPage() {
               handleBack={handleBack}
               onSent={clearSaved}
               total={totalSteps}
+              headingRef={headingRef}
             />
           )}
         </section>

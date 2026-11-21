@@ -1,8 +1,8 @@
 import { CalendarClock, Coffee, Lightbulb, RefreshCw, Search, Users, Wrench } from "lucide-preact";
-import { Instagram, Linkedin } from "@/components/brand-icons";
 import type { ComponentChildren } from "preact";
-import { type Answers, budgets, sources, stages, teamSizes, timelines } from "./qualify";
+import { Instagram, Linkedin } from "@/components/brand-icons";
 import { ChoiceGroup } from "./choice-group";
+import { type Answers, budgets, sources, stages, teamSizes, timelines } from "./qualify";
 import { StepNav } from "./step-nav";
 
 interface FormQualifyStepProps {
@@ -12,6 +12,7 @@ interface FormQualifyStepProps {
   onChange: (patch: Partial<Answers>) => void;
   handleNext: VoidFunction;
   handleBack: VoidFunction;
+  headingRef: { current: HTMLHeadingElement | null };
 }
 
 const copy = {
@@ -29,13 +30,23 @@ function isComplete(step: 2 | 3 | 4, answers: Answers) {
   return Boolean(answers.teamSize && answers.description.trim().length >= 4);
 }
 
-export function FormQualifyStep({ step, total, answers, onChange, handleNext, handleBack }: FormQualifyStepProps) {
+export function FormQualifyStep({
+  step,
+  total,
+  answers,
+  onChange,
+  handleNext,
+  handleBack,
+  headingRef,
+}: FormQualifyStepProps) {
   let fields: ComponentChildren;
+  const complete = isComplete(step, answers);
 
   if (step === 2) {
     fields = (
       <>
         <ChoiceGroup
+          name="stage"
           label="Qual frase descreve melhor sua situação?"
           choices={stages}
           value={answers.stage}
@@ -64,6 +75,7 @@ export function FormQualifyStep({ step, total, answers, onChange, handleNext, ha
     fields = (
       <>
         <ChoiceGroup
+          name="timeline"
           label="Para quando você precisa?"
           choices={timelines}
           value={answers.timeline}
@@ -71,6 +83,7 @@ export function FormQualifyStep({ step, total, answers, onChange, handleNext, ha
           icons={{ "sem-pressa": Coffee, "1-mes": CalendarClock }}
         />
         <ChoiceGroup
+          name="budget"
           label="Quanto pretende investir?"
           choices={budgets}
           value={answers.budget}
@@ -79,6 +92,7 @@ export function FormQualifyStep({ step, total, answers, onChange, handleNext, ha
       </>
     );
   } else {
+    const missingDesc = answers.description.trim().length < 4;
     fields = (
       <>
         <div className="mz-grid2">
@@ -95,6 +109,7 @@ export function FormQualifyStep({ step, total, answers, onChange, handleNext, ha
             />
           </label>
           <ChoiceGroup
+            name="teamSize"
             label="Tamanho da equipe"
             choices={teamSizes}
             value={answers.teamSize}
@@ -110,10 +125,22 @@ export function FormQualifyStep({ step, total, answers, onChange, handleNext, ha
             value={answers.description}
             onInput={(e) => onChange({ description: e.currentTarget.value })}
             maxLength={2000}
+            aria-describedby="desc-hint"
           />
+          <span id="desc-hint" className="mz-hint">
+            {!answers.teamSize && missingDesc
+              ? "Escolha o tamanho da equipe e escreva uma frase curta sobre o desafio para continuar."
+              : !answers.teamSize
+                ? "Escolha o tamanho da equipe para continuar."
+                : missingDesc
+                  ? "Escreva pelo menos uma frase curta sobre o desafio para continuar."
+                  : "Tudo certo — você já pode avançar para a última etapa."}
+          </span>
         </label>
         <ChoiceGroup
+          name="source"
           label="Como conheceu a Morzen?"
+          optional
           choices={sources}
           value={answers.source}
           onChange={(source) => onChange({ source })}
@@ -125,8 +152,10 @@ export function FormQualifyStep({ step, total, answers, onChange, handleNext, ha
 
   return (
     <div className="mz-step" key={step}>
-      <p className="mz-eyebrow">Etapa {String(step).padStart(2, "0")}</p>
-      <h2>{copy[step].title}</h2>
+      <p className="mz-kicker">Etapa {String(step).padStart(2, "0")}</p>
+      <h2 ref={headingRef} tabIndex={-1}>
+        {copy[step].title}
+      </h2>
       <p className="mz-lead">{copy[step].text}</p>
       <div className="mz-body">{fields}</div>
       <StepNav
@@ -134,7 +163,7 @@ export function FormQualifyStep({ step, total, answers, onChange, handleNext, ha
         total={total}
         onBack={handleBack}
         onNext={handleNext}
-        nextDisabled={!isComplete(step, answers)}
+        nextDisabled={!complete}
       />
     </div>
   );

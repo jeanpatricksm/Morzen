@@ -6,6 +6,8 @@ export interface Project {
   url: string;
   imageSrc: string;
   imageAlt: string;
+  imageWidth?: number;
+  imageHeight?: number;
   description: string[];
 }
 
@@ -17,6 +19,8 @@ export const projects: Project[] = [
     url: "anajuliavilelaadvogada.com",
     imageSrc: "/projects/landing-ana-julia.webp",
     imageAlt: "Exemplo de landing page feita pela Morzen",
+    imageWidth: 1440,
+    imageHeight: 900,
     description: ["Primeira impressão com personalidade", "Clareza em qualquer tela"],
   },
   {
@@ -26,6 +30,8 @@ export const projects: Project[] = [
     url: "painel.seunegocio.com",
     imageSrc: "/dashboard_example.webp",
     imageAlt: "Exemplo de dashboard",
+    imageWidth: 1280,
+    imageHeight: 720,
     description: ["Leitura rápida do que importa", "Decisões com menos ruído"],
   },
   {
@@ -35,6 +41,8 @@ export const projects: Project[] = [
     url: "eosfit.com.br",
     imageSrc: "/projects/app-eos-fit-desktop.webp",
     imageAlt: "Exemplo de app iOS feito pela Morzen",
+    imageWidth: 1440,
+    imageHeight: 900,
     description: ["Uma ideia desenhada ao seu redor", "Tecnologia que acompanha o momento"],
   },
 ];
